@@ -3,7 +3,6 @@ use axum::{
     Router,
     extract::DefaultBodyLimit,
 };
-use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
 use tower_http::cors::CorsLayer;
 use sqlx::postgres::PgPoolOptions;
@@ -61,10 +60,10 @@ async fn main() -> anyhow::Result<()> {
         .layer(cors)
         .layer(DefaultBodyLimit::max(10 * 1024 * 1024)); // 10MB limit
 
-    let addr: SocketAddr = config.server_addr.parse()?;
+    let listener = tokio::net::TcpListener::bind(&config.server_addr).await?;
+    let addr = listener.local_addr()?;
     tracing::info!("AADE Validator listening on {}", addr);
     
-    let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
 
     Ok(())
