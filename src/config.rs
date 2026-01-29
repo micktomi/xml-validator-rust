@@ -42,7 +42,9 @@ impl Config {
             .collect();
 
         let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
-        let server_addr = env::var("SERVER_ADDR").unwrap_or_else(|_| format!("0.0.0.0:{}", port));
+        let server_addr = env::var("SERVER_ADDR")
+            .map(|s| s.trim().to_string())
+            .unwrap_or_else(|_| format!("0.0.0.0:{}", port.trim()));
 
         Self {
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
