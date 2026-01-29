@@ -14,18 +14,18 @@ pub async fn log_validation(
     // Determine validity based on status (Green/Yellow are considered valid for submission, Red is invalid)
     let is_valid = report.status != ValidationStatus::Red;
 
-    sqlx::query!(
+    sqlx::query(
         r#"
         INSERT INTO validation_logs (invoice_hash, issuer_vat, invoice_series, invoice_aa, is_valid, errors_json)
         VALUES ($1, $2, $3, $4, $5, $6)
         "#,
-        hash,
-        invoice.issuer.vat_number,
-        invoice.header.series,
-        invoice.header.aa,
-        is_valid,
-        report_json
     )
+    .bind(hash)
+    .bind(&invoice.issuer.vat_number)
+    .bind(&invoice.header.series)
+    .bind(&invoice.header.aa)
+    .bind(is_valid)
+    .bind(report_json)
     .execute(pool)
     .await?;
 

@@ -41,9 +41,12 @@ impl Config {
             .filter(|s| !s.is_empty())
             .collect();
 
+        let port = env::var("PORT").unwrap_or_else(|_| "3000".to_string());
+        let server_addr = env::var("SERVER_ADDR").unwrap_or_else(|_| format!("0.0.0.0:{}", port));
+
         Self {
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
-            server_addr: env::var("SERVER_ADDR").unwrap_or_else(|_| "127.0.0.1:3000".to_string()),
+            server_addr,
             cors_allowed_origins,
             environment,
         }
