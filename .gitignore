@@ -1,5 +1,3 @@
 /target
 .env
-.env.local
-.env.production
-# Κράτα μόνο τα .env.example, .env.docker ως templates
+# Local env file (do not commit)
